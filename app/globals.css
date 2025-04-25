@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Hero animated background */
+.hero-animated-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/hero-bg2.png");
+  background-size: cover;
+  background-position: center;
+  animation: pulse 8s ease-in-out infinite alternate;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(0.8) contrast(1.2);
+  }
+  100% {
+    transform: scale(1.05);
+    filter: brightness(1) contrast(1);
+  }
+}
+
+/* Valorant-style geometric lines animation */
+.hero-animated-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: grid-move 15s linear infinite;
+}
+
+.hero-animated-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: grid-move 20s linear infinite reverse;
+}
+
+@keyframes grid-move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 40px;
+  }
+}
+
+/* Hide scrollbar but allow scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Mobile menu animation */
+.animate-in {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive font sizes */
+@media (max-width: 640px) {
+  .text-xs {
+    font-size: 0.75rem;
+  }
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  .text-base {
+    font-size: 1rem;
+  }
+}
+
+/* Improved Coin flip animation */
+.perspective-container {
+  perspective: 1000px;
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+}
+
+.coin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.1s;
+}
+
+.coin-side {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.coin-heads {
+  transform: rotateY(0deg);
+}
+
+.coin-tails {
+  transform: rotateY(180deg);
+}
+
+/* Fixed positions for result display */
+.heads-up {
+  transform: rotateY(0deg);
+}
+
+.tails-up {
+  transform: rotateY(180deg);
+}
+
+/* Animation for heads result (ends with heads facing up) */
+@keyframes flip-heads {
+  0% {
+    transform: rotateY(0);
+  }
+  20% {
+    transform: rotateY(180deg);
+  }
+  40% {
+    transform: rotateY(360deg);
+  }
+  60% {
+    transform: rotateY(540deg);
+  }
+  80% {
+    transform: rotateY(720deg);
+  }
+  100% {
+    transform: rotateY(1080deg);
+  }
+}
+
+/* Animation for tails result (ends with tails facing up) */
+@keyframes flip-tails {
+  0% {
+    transform: rotateY(0);
+  }
+  20% {
+    transform: rotateY(180deg);
+  }
+  40% {
+    transform: rotateY(360deg);
+  }
+  60% {
+    transform: rotateY(540deg);
+  }
+  80% {
+    transform: rotateY(720deg);
+  }
+  100% {
+    transform: rotateY(1260deg);
+  }
+}
+
+/* Random animation for initial flip */
+@keyframes flip-random {
+  0% {
+    transform: rotateY(0);
+  }
+  20% {
+    transform: rotateY(180deg);
+  }
+  40% {
+    transform: rotateY(360deg);
+  }
+  60% {
+    transform: rotateY(540deg);
+  }
+  80% {
+    transform: rotateY(720deg);
+  }
+  100% {
+    transform: rotateY(1080deg);
+  }
+}
+
+.coin-flip-heads {
+  animation: flip-heads 1.5s ease-out forwards;
+}
+
+.coin-flip-tails {
+  animation: flip-tails 1.5s ease-out forwards;
+}
+
+.coin-flip-random {
+  animation: flip-random 1.5s ease-out forwards;
+}
