@@ -37,6 +37,7 @@ export default function CoinToss({ onClose, onConfirmGroups }: CoinTossProps) {
     { id: 7, name: "Racket Gun Mafia", logo: "/team-logos/RGM.png", group: null },
     { id: 8, name: "DCSL Wolves", logo: "/team-logos/DCSL Wolves.png", group: null },
     { id: 9, name: "Kitchen Masters", logo: "/team-logos/Kitchen Masters.png", group: null },
+    { id: 10, name: "PKK", logo: "/team-logos/PKK.png", group: null },
   ])
   const [step, setStep] = useState<"select" | "flip" | "result" | "confirm">("select")
   const audioRef = useRef<HTMLAudioElement | null>(null)

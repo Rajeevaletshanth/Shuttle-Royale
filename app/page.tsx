@@ -533,6 +533,7 @@ const teams = [
   { id: 7, name: "Racket Gun Mafia", logo: "/team-logos/RGM.png" },
   { id: 8, name: "DCSL Wolves", logo: "/team-logos/DCSL Wolves.png" },
   { id: 9, name: "Kitchen Masters", logo: "/team-logos/Kitchen Masters.png" },
+  { id: 10, name: "PKK", logo: "/team-logos/PKK.png" },
 ]
 
 const upcomingMatches:any = [
