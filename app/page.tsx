@@ -189,9 +189,9 @@ export default function Home() {
                 <li className="hover:text-primary transition-colors">
                   <a href="#standings">Standings</a>
                 </li>
-                <li className="hover:text-primary transition-colors">
+                {/* <li className="hover:text-primary transition-colors">
                   <a href="#bracket">Bracket</a>
-                </li>
+                </li> */}
                 <li className="hover:text-primary transition-colors">
                   <a href="#matches">Matches</a>
                 </li>

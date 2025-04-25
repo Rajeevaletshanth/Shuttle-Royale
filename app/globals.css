@@ -68,7 +68,9 @@
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  display: flex;
+  width: max-content;
+  animation: marquee 20s linear infinite; /* Adjust duration as needed */
 }
 
 /* Hero animated background */
