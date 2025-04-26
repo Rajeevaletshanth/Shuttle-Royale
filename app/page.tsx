@@ -49,85 +49,135 @@ export default function Home() {
     // { id: 8, rank: 4, name: "DCSL Wolves", logo: "/team-logos/DCSL Wolves.png", played: 6, won: 2, lost: 4, points: 4 },
   ])
 
-  
+
 
   const [data, setData] = useState<any>([])
-    const fetchPoints = async() => {
-        try {
-            const response:any = await axios.get('https://api.brexe.com/sbplay/getAll')
-            if(response.data.response === 'success'){
-                let tempData :any = response.data.data;
-                let datat:any = []
-                tempData.map((item:any) => {
-                    datat.push({
-                        team: item.team_name,
-                        played: item.played,
-                        won: item.wins, 
-                        lost: item.losts,
-                        group: item.group,
-                        logo: item.logo,
-                        id: item.id,
-                        qualified: item.qualified,
-                        matchesWin: item.games_win,
-                        matchesPlayed: item.matches_played, 
-                        points: item.points * 2, 
-                        winMatchRatio: (item.matches_played === 0 || item.games_win === 0) ? 0 : item.games_win/item.matches_played
-                    })
-                })
-                datat.sort((a: any, b: any) => {
-                    if (b.points !== a.points) {
-                      return b.points - a.points;
-                    }
-                    return b.winMatchRatio - a.winMatchRatio;
-                  });
-            
-                  datat = datat.map((item: any, index: number) => ({
-                    ...item,
-                    rank: index + 1,
-                  }));
+  const fetchPoints = async () => {
+    try {
+      const response: any = await axios.get('https://api.brexe.com/sbplay/getAll')
+      if (response.data.response === 'success') {
+        let tempData: any = response.data.data;
+        let datat: any = []
+        tempData.map((item: any) => {
+          datat.push({
+            team: item.team_name,
+            played: item.played,
+            won: item.wins,
+            lost: item.losts,
+            group: item.group,
+            logo: item.logo,
+            id: item.id,
+            qualified: item.qualified,
+            matchesWin: item.games_win,
+            matchesPlayed: item.matches_played,
+            points: item.points * 2,
+            winMatchRatio: (item.matches_played === 0 || item.games_win === 0) ? 0 : item.games_win / item.matches_played
+          })
+        })
+        datat.sort((a: any, b: any) => {
+          if (b.points !== a.points) {
+            return b.points - a.points;
+          }
+          return b.winMatchRatio - a.winMatchRatio;
+        });
 
-                  let tempAGroup: any = [];
-                  let tempBGroup: any = [];
+        datat = datat.map((item: any, index: number) => ({
+          ...item,
+          rank: index + 1,
+        }));
 
-                  datat.map((item:any, index:number) => {
-                    if(item.group === 'A'){
-                      tempAGroup.push({
-                         id: item.id, 
-                         rank: tempAGroup.length+1, 
-                         name: item.team, 
-                         logo: item.logo, 
-                         played: item.played, 
-                         won: item.won, 
-                         lost: item.lost, 
-                         points: item.points
-                      })
-                    }else if(item.group === 'B'){
-                      tempBGroup.push({
-                        id: item.id, 
-                        rank: tempBGroup.length+1, 
-                        name: item.team, 
-                        logo: item.logo, 
-                        played: item.played, 
-                        won: item.won, 
-                        lost: item.lost, 
-                        points: item.points
-                      })
-                    }
-                    
-                  })
-                  setGroupAStandings(tempAGroup)
-                  setGroupBStandings(tempBGroup)
-                // setData(datat)
-            }
-        } catch (error) {
-            
-        }
+        let tempAGroup: any = [];
+        let tempBGroup: any = [];
+
+        datat.map((item: any, index: number) => {
+          if (item.group === 'A') {
+            tempAGroup.push({
+              id: item.id,
+              rank: tempAGroup.length + 1,
+              name: item.team,
+              logo: item.logo,
+              played: item.played,
+              won: item.won,
+              lost: item.lost,
+              points: item.points
+            })
+          } else if (item.group === 'B') {
+            tempBGroup.push({
+              id: item.id,
+              rank: tempBGroup.length + 1,
+              name: item.team,
+              logo: item.logo,
+              played: item.played,
+              won: item.won,
+              lost: item.lost,
+              points: item.points
+            })
+          }
+
+        })
+        setGroupAStandings(tempAGroup)
+        setGroupBStandings(tempBGroup)
+        // setData(datat)
+      }
+    } catch (error) {
+
     }
+  }
 
-    // Ensure theme toggle only renders client-side to avoid hydration mismatch
+  const [upcomingMatches, setUpcomingMatches] = useState<any>(null)
+  const [recentResults, setRecentResults] = useState<any>(null)
+  
+  const fetchFixtures = async () => {
+    try {
+      const response: any = await axios.get('https://api.brexe.com/matches/getAll')
+      if (response.data.response === 'success') {
+        let tdata: any = [];
+        let trdata: any = [];
+        response.data.matches.map((item: any) => {
+          if (!item.results) {
+            tdata.push({
+              id: item.match_no,
+              team1: { name: item.team_1, logo: `/team-logos/${item.team_1 === 'Racket Gun Mafia' ? 'RGM' : item.team_1.startsWith("Lambert") ? "LsSmash" : item.team_1}.png` },
+              team2: { name: item.team_2, logo: `/team-logos/${item.team_2 === 'Racket Gun Mafia' ? 'RGM' : item.team_2.startsWith("Lambert") ? "LsSmash" : item.team_2}.png` },
+              date: item.date,
+              time: item.time,
+              tournament: item.match_no,
+            })
+          } else if (item.results) {
+            let sets:any = [];
+            const results = JSON.parse(item.results);
+
+            results[0].points.map((point: any, index: number) => {
+              sets.push({
+                team1: point,
+                team2: results[1].points[index] // matching index for team 2
+              });
+            });
+
+            trdata.push({
+              id: item.match_no,
+              team1: { name: item.team_1, logo: `/team-logos/${item.team_1 === 'Racket Gun Mafia' ? 'RGM' : item.team_1.startsWith("Lambert") ? "LsSmash" : item.team_1}.png` },
+              team2: { name: item.team_2, logo: `/team-logos/${item.team_2 === 'Racket Gun Mafia' ? 'RGM' : item.team_2.startsWith("Lambert") ? "LsSmash" : item.team_2}.png` },
+              date: item.date,
+              sets: sets,
+              winner: item.team_1 === item.winner ?  1 : 2,
+              tournament: item.match_no,
+            })
+          }
+        })
+        setUpcomingMatches(tdata.length > 0 ? tdata.slice().reverse() : null)
+        setRecentResults(trdata.length > 0 ? trdata : null)
+      }
+    } catch (error) {
+
+    }
+  }
+
+  // Ensure theme toggle only renders client-side to avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
     fetchPoints()
+    fetchFixtures()
   }, [])
 
   // Handle group confirmation
@@ -161,7 +211,8 @@ export default function Home() {
       setGroupAStandings(newGroupAStandings)
       setGroupBStandings(newGroupBStandings)
     }
-  ))}
+    ))
+  }
 
   return (
     <div className="min-h-screen">
@@ -376,11 +427,11 @@ export default function Home() {
             </TabsList>
             <TabsContent value="upcoming">
               <div className="grid gap-4 md:grid-cols-2">
-                {upcomingMatches.map((match:any) => (
+                {upcomingMatches?.map((match: any) => (
                   <Card key={match.id}>
                     <CardHeader className="bg-muted/50 py-2 px-4">
                       <div className="flex justify-between items-center">
-                        <Badge variant="outline">{match.tournament}</Badge>
+                        <Badge variant="outline">Match {match.tournament}</Badge>
                         <span className="text-sm">{match.date}</span>
                       </div>
                     </CardHeader>
@@ -418,7 +469,7 @@ export default function Home() {
             </TabsContent>
             <TabsContent value="results">
               <div className="grid gap-4 md:grid-cols-2">
-                {recentResults.map((match:any) => (
+                {recentResults?.map((match: any) => (
                   <Card
                     key={match.id}
                     className={
@@ -431,7 +482,7 @@ export default function Home() {
                   >
                     <CardHeader className="bg-muted/50 py-2 px-4">
                       <div className="flex justify-between items-center">
-                        <Badge variant="outline">{match.tournament}</Badge>
+                        <Badge variant="outline">Match {match.tournament}</Badge>
                         <span className="text-sm">{match.date}</span>
                       </div>
                     </CardHeader>
@@ -449,7 +500,7 @@ export default function Home() {
                           />
                           <span className="font-bold text-xs">{match.team1.name}</span>
                           <div className="mt-2">
-                            {match.sets.map((set:any, index:number) => (
+                            {match.sets.map((set: any, index: number) => (
                               <span
                                 key={index}
                                 className={`inline-block px-2 py-1 text-sm font-mono rounded mx-1 ${set.team1 > set.team2 ? "bg-primary/20 font-bold" : "bg-muted"
@@ -459,10 +510,8 @@ export default function Home() {
                               </span>
                             ))}
                           </div>
-                          {match.winner === 1 ? (
+                          {match.winner === 1 && (
                             <Badge className="mt-2 bg-primary">Winner</Badge>
-                          ) : (
-                            <Badge className="mt-2 "></Badge>
                           )}
                         </div>
                         <div className="text-center">
@@ -480,7 +529,7 @@ export default function Home() {
                           />
                           <span className="font-bold text-xs">{match.team2.name}</span>
                           <div className="mt-2">
-                            {match.sets.map((set:any, index:number) => (
+                            {match.sets.map((set: any, index: number) => (
                               <span
                                 key={index}
                                 className={`inline-block px-2 py-1 text-sm font-mono rounded mx-1 ${set.team2 > set.team1 ? "bg-primary/20 font-bold" : "bg-muted"
@@ -536,90 +585,57 @@ const teams = [
   { id: 10, name: "PKK", logo: "/team-logos/PKK.png" },
 ]
 
-const upcomingMatches:any = [
-  // {
-  //   id: 1,
-  //   team1: { name: "Birdies", logo: "/team-logos/Birdies.png" },
-  //   team2: { name: "Red Dragon", logo: "/team-logos/Red Dragon.png" },
-  //   date: "May 2, 2025",
-  //   time: "18:00 GMT",
-  //   tournament: "Group A",
-  // },
-  // {
-  //   id: 2,
-  //   team1: { name: "Sharks", logo: "/team-logos/Sharks.png" },
-  //   team2: { name: "Exbolts", logo: "/team-logos/Exbolts.png" },
-  //   date: "May 3, 2025",
-  //   time: "15:30 GMT",
-  //   tournament: "Group A",
-  // },
-  // {
-  //   id: 3,
-  //   team1: { name: "Power Boys", logo: "/team-logos/Power Boys.png" },
-  //   team2: { name: "Racket Gun Mafia", logo: "/team-logos/RGM.png" },
-  //   date: "May 4, 2025",
-  //   time: "19:00 GMT",
-  //   tournament: "Group B",
-  // },
-  // {
-  //   id: 4,
-  //   team1: { name: "Lambert's Smash", logo: "/team-logos/Lambert's Smash.png" },
-  //   team2: { name: "DCSL Wolves", logo: "/team-logos/DCSL Wolves.png" },
-  //   date: "May 5, 2025",
-  //   time: "17:45 GMT",
-  //   tournament: "Group B",
-  // },
-]
 
-const recentResults:any = [
-  // {
-  //   id: 1,
-  //   team1: { name: "Birdies", logo: "/team-logos/Birdies.png" },
-  //   team2: { name: "Lambert's Smash", logo: "/team-logos/Lambert's Smash.png" },
-  //   date: "April 28, 2025",
-  //   sets: [
-  //     { team1: 21, team2: 15 },
-  //     { team1: 21, team2: 18 },
-  //   ],
-  //   winner: 1,
-  //   tournament: "Group A vs B",
-  // },
-  // {
-  //   id: 2,
-  //   team1: { name: "Red Dragon", logo: "/team-logos/Red Dragon.png" },
-  //   team2: { name: "DCSL Wolves", logo: "/team-logos/DCSL Wolves.png" },
-  //   date: "April 27, 2025",
-  //   sets: [
-  //     { team1: 21, team2: 18 },
-  //     { team1: 19, team2: 21 },
-  //     { team1: 21, team2: 15 },
-  //   ],
-  //   winner: 1,
-  //   tournament: "Group A vs B",
-  // },
-  // {
-  //   id: 3,
-  //   team1: { name: "Sharks", logo: "/team-logos/Sharks.png" },
-  //   team2: { name: "Racket Gun Mafia", logo: "/team-logos/RGM.png" },
-  //   date: "April 26, 2025",
-  //   sets: [
-  //     { team1: 19, team2: 21 },
-  //     { team1: 21, team2: 19 },
-  //     { team1: 18, team2: 21 },
-  //   ],
-  //   winner: 2,
-  //   tournament: "Group A vs B",
-  // },
-  // {
-  //   id: 4,
-  //   team1: { name: "Exbolts", logo: "/team-logos/Exbolts.png" },
-  //   team2: { name: "Power Boys", logo: "/team-logos/Power Boys.png" },
-  //   date: "April 25, 2025",
-  //   sets: [
-  //     { team1: 15, team2: 21 },
-  //     { team1: 18, team2: 21 },
-  //   ],
-  //   winner: 2,
-  //   tournament: "Group A vs B",
-  // },
-]
+
+// const recentResults: any = [
+//   // {
+//   //   id: 1,
+//   //   team1: { name: "Birdies", logo: "/team-logos/Birdies.png" },
+//   //   team2: { name: "Lambert's Smash", logo: "/team-logos/Lambert's Smash.png" },
+//   //   date: "April 28, 2025",
+//   //   sets: [
+//   //     { team1: 21, team2: 15 },
+//   //     { team1: 21, team2: 18 },
+//   //   ],
+//   //   winner: 1,
+//   //   tournament: "Group A vs B",
+//   // },
+//   // {
+//   //   id: 2,
+//   //   team1: { name: "Red Dragon", logo: "/team-logos/Red Dragon.png" },
+//   //   team2: { name: "DCSL Wolves", logo: "/team-logos/DCSL Wolves.png" },
+//   //   date: "April 27, 2025",
+//   //   sets: [
+//   //     { team1: 21, team2: 18 },
+//   //     { team1: 19, team2: 21 },
+//   //     { team1: 21, team2: 15 },
+//   //   ],
+//   //   winner: 1,
+//   //   tournament: "Group A vs B",
+//   // },
+//   // {
+//   //   id: 3,
+//   //   team1: { name: "Sharks", logo: "/team-logos/Sharks.png" },
+//   //   team2: { name: "Racket Gun Mafia", logo: "/team-logos/RGM.png" },
+//   //   date: "April 26, 2025",
+//   //   sets: [
+//   //     { team1: 19, team2: 21 },
+//   //     { team1: 21, team2: 19 },
+//   //     { team1: 18, team2: 21 },
+//   //   ],
+//   //   winner: 2,
+//   //   tournament: "Group A vs B",
+//   // },
+//   // {
+//   //   id: 4,
+//   //   team1: { name: "Exbolts", logo: "/team-logos/Exbolts.png" },
+//   //   team2: { name: "Power Boys", logo: "/team-logos/Power Boys.png" },
+//   //   date: "April 25, 2025",
+//   //   sets: [
+//   //     { team1: 15, team2: 21 },
+//   //     { team1: 18, team2: 21 },
+//   //   ],
+//   //   winner: 2,
+//   //   tournament: "Group A vs B",
+//   // },
+// ]
