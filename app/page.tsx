@@ -93,7 +93,7 @@ export default function Home() {
                     if(item.group === 'A'){
                       tempAGroup.push({
                          id: item.id, 
-                         rank: tempAGroup.length, 
+                         rank: tempAGroup.length+1, 
                          name: item.team, 
                          logo: item.logo, 
                          played: item.played, 
@@ -104,7 +104,7 @@ export default function Home() {
                     }else if(item.group === 'B'){
                       tempBGroup.push({
                         id: item.id, 
-                        rank: tempBGroup.length, 
+                        rank: tempBGroup.length+1, 
                         name: item.team, 
                         logo: item.logo, 
                         played: item.played, 
@@ -510,11 +510,11 @@ export default function Home() {
       </footer>
 
       {/* Coin Toss Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* <div className="fixed bottom-6 right-6 z-50">
         <Button size="lg" className="rounded-full h-14 w-14 shadow-lg" onClick={() => setShowCoinToss(true)}>
           <CoinsIcon className="h-6 w-6" />
         </Button>
-      </div>
+      </div> */}
 
       {/* Coin Toss Modal */}
       {showCoinToss && <CoinToss onClose={() => setShowCoinToss(false)} onConfirmGroups={handleConfirmGroups} />}
